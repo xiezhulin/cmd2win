@@ -36,6 +36,26 @@ import socket
 import struct
 
 class SmbCmd():
+    usage="""dosmb [Optinos] [Args]
+Args:
+    cmp <src> <dst>
+        cmp two files or directories
+
+    open [file/directory] [...]
+        open files or directories, defaults to the current directory
+
+    open_parent_dir [file/directory] [...]
+        open the parent directory of given files or directories, defaults to the current directory
+
+    custom <"windows command"> [file/directory] [...]
+        run windows command, file and directory can be converted to smb path(s), defauls to the
+        current directory if file/directory no given
+        .e.g:
+            dosmb --host 172.25.105.45 custom "adb install -r" ./build/testdemo.apk
+
+    clip <file/directory/content>
+        copy content or a smb path of the given file/directory to window's clipboard, defaults to the current directory"""
+
     home = os.environ.get('HOME')
     user = os.environ.get('USER')
 
@@ -76,29 +96,6 @@ class SmbCmd():
     finally:
         if not comparer:
             comparer = 'fc'
-
-    usage = """Copyright (c) Guangdong vivo software technology CO.,LTD.
-smb command by Ronny<xiezhulin@vivo.com>
-
-dosmb [Optinos] [Args]
-Args:
-    cmp <src> <dst>
-        cmp two files or directories
-
-    open [file/directory] [...]
-        open files or directories, defaults to the current directory
-
-    open_parent_dir [file/directory] [...]
-        open the parent directory of given files or directories, defaults to the current directory
-
-    custom <"windows command"> [file/directory] [...]
-        run windows command, file and directory can be converted to smb path(s), defauls to the
-        current directory if file/directory no given
-        .e.g:
-            dosmb --host 172.25.105.45 custom "adb install -r" ./build/testdemo.apk
-
-    clip <file/directory/content>
-        copy content or a smb path of the given file/directory to window's clipboard, defaults to the current directory"""
 
     def __init__(self, *args):
         cmd = self.parse_args()
@@ -155,7 +152,7 @@ Args:
             self.port = int(opt.port)
 
         if len(remainder) < 1:
-            print("No args given")
+            print("No args given!\nRun 'dosmb -h' to get help")
 
         return remainder
 
