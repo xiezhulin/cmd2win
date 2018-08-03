@@ -48,10 +48,16 @@ Args:
         open the parent directory of given files or directories, defaults to the current directory
 
     custom <"windows command"> [file/directory] [...]
-        run windows command, file and directory can be converted to smb path(s), defauls to the
-        current directory if file/directory no given
+        run windows command, double quotation marks are used as references for multi-words; file/directory will be
+        kept its native format if it starts with a colon, or convert to samba format; file/directory no defaults
+
         .e.g:
             dosmb --host 172.25.105.45 custom "adb install -r" ./build/testdemo.apk
+            dosmb --host 172.25.105.45 custom "adb push" ./app/build/outputs/apk/debug/app-debug.apk :/system/app/TestDemo
+            dosmb --host 172.25.105.45 custom "adb root & adb remount"
+            dosmb --host 172.25.105.45 custom "adb remount"
+            dosmb --host 172.25.105.45 custom "adb shell mkdir -p" :/system/app/TestDemo
+            dosmb --host 172.25.105.45 custom "adb shell rm -rf" :/system/app/TestDemo
 
     clip <file/directory/content>
         copy content or a smb path of the given file/directory to window's clipboard, defaults to the current directory"""
@@ -163,7 +169,7 @@ Args:
 
         for p in args:
             if not os.path.exists(p):
-                print("%s: No such file or directory" % (p,))
+                print("%s: No such file or directory" % (p, ))
                 return ''
 
         src = self.to_absolute_and_valid(args[0])
@@ -187,7 +193,7 @@ Args:
                 p = os.path.dirname(self.to_absolute_and_valid(p))
 
             if not os.path.exists(p):
-                print("%s: No such file or directory" % (p,))
+                print("%s: No such file or directory" % (p, ))
                 return ''
 
             p_real = self.to_absolute_and_valid(p)
@@ -197,7 +203,7 @@ Args:
             elif os.path.isfile(p):
                 filelist.append(p_smb)
             else:
-                print("%s: unknown type" % (p,))
+                print("%s: unknown type" % (p, ))
                 return ''
 
         for d in dirlist:
@@ -216,10 +222,9 @@ Args:
 
     """
     @params args[0]:
-        windows command, double quotation marks are used as references for multi-words,
-        such as "adb install" /path/to/test.apk
+        windows command, double quotation marks are used as references for multi-words
     @params args[1..n]:
-        linux path, use current directory as default when args[1..n] no given
+        keep its native format if the path starts with a colon, or convert to samba format
     """
     def custom(self, args):
         if len(args) < 1:
@@ -230,14 +235,14 @@ Args:
         cmd.append(args[0])
 
         args = args[1:]
-        if len(args) == 0:
-            args = [os.getcwd(), ]
-            if self.verbose:
-                print("Use current working directory as defaut")
-
         for p in args:
-            if not os.path.exists(p):
-                print("%s: No such file or directory" % (p,))
+            if p.startswith(':'):
+                p = p[1:]
+                if self.verbose:
+                    print("Skip origin path:[%s]" % (p, ))
+                cmd.append(p)
+            elif not os.path.exists(p):
+                print("%s: No such file or directory" % (p, ))
                 return ''
             else:
                 p_real = self.to_absolute_and_valid(p)
@@ -257,7 +262,7 @@ Args:
 
         p = args[0]
         if not os.path.exists(p):
-            print("%s: No such file or directory" % (p,))
+            print("%s: No such file or directory" % (p, ))
 
         p_real = self.to_absolute_and_valid(p)
         p_smb = self.path2smb(p_real)
@@ -285,7 +290,7 @@ Args:
         if smb_cmd:
             self.s.send(smb_cmd)
             if self.verbose:
-                print("Send: [%s]" % (smb_cmd,))
+                print("Send: [%s]" % (smb_cmd, ))
 
         self.s.close()
 
