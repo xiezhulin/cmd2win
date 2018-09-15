@@ -36,7 +36,7 @@ Do operations based on samba quickly on windows by using custom commands on linu
      run by windows cmd
      $ export SMB_COMPARER="Bcompare"
 # FAQ
-##1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
+## 1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
      samba config rule as follows, my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin too
      [xiezhulin]
      comment = shared Folder with username and password
