@@ -33,10 +33,10 @@ Do operations based on samba quickly on windows by using custom commands on linu
      $ export SMB_TXT_EDITOR="gvim"
      $ export SMB_TXT_EDITOR_SUPPORT_MULTI_FILES=True
      Config windows compare tools, and add the tools to windows' environment, defaults to fc, ensure "Bcompare" can
-     run by windows cmd 
+     run by windows cmd
      $ export SMB_COMPARER="Bcompare"
 # FAQ
-1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
+##1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
      samba config rule as follows, my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin too
      [xiezhulin]
      comment = shared Folder with username and password
@@ -46,3 +46,4 @@ Do operations based on samba quickly on windows by using custom commands on linu
      available = yes
      browseable = yes
      valid users = xiezhulin
+     
