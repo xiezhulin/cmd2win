@@ -36,14 +36,13 @@ Do operations based on samba quickly on windows by using custom commands on linu
      run by windows cmd 
      $ export SMB_COMPARER="Bcompare"
 # FAQ
-1. Ensure 'Sharename' is your linux user name in samba config(/etc/samba/smb.conf) -- TOSUPPORT
-    # my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin, samba config as follows
-    [xiezhulin]
-    comment = shared Folder with username and password
-    path = /home/xiezhulin
-    public = yes
-    writable = yes
-    available = yes
-    browseable = yes
-    valid users = xiezhulin
-
+1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
+     samba config rule as follows, my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin too
+     [xiezhulin]
+     comment = shared Folder with username and password
+     path = /home/xiezhulin
+     public = yes
+     writable = yes
+     available = yes
+     browseable = yes
+     valid users = xiezhulin
