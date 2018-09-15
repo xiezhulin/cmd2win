@@ -52,12 +52,12 @@ Args:
         kept its native format if it starts with a colon, or convert to samba format; file/directory no defaults
 
         .e.g:
-            dosmb --host 172.25.105.45 custom "adb install -r" ./build/testdemo.apk
-            dosmb --host 172.25.105.45 custom "adb push" ./app/build/outputs/apk/debug/app-debug.apk :/system/app/TestDemo
-            dosmb --host 172.25.105.45 custom "adb root & adb remount"
-            dosmb --host 172.25.105.45 custom "adb remount"
-            dosmb --host 172.25.105.45 custom "adb shell mkdir -p" :/system/app/TestDemo
-            dosmb --host 172.25.105.45 custom "adb shell rm -rf" :/system/app/TestDemo
+            dosmb --host 192.168.1.1 custom "adb install -r" ./build/testdemo.apk
+            dosmb --host 192.168.1.1 custom "adb push" ./app/build/outputs/apk/debug/app-debug.apk :/system/app/TestDemo
+            dosmb --host 192.168.1.1 custom "adb root & adb remount"
+            dosmb --host 192.168.1.1 custom "adb remount"
+            dosmb --host 192.168.1.1 custom "adb shell mkdir -p" :/system/app/TestDemo
+            dosmb --host 192.168.1.1 custom "adb shell rm -rf" :/system/app/TestDemo
 
     clip <file/directory/content>
         copy content or a smb path of the given file/directory to window's clipboard, defaults to the current directory"""
@@ -66,7 +66,7 @@ Args:
     user = os.environ.get('USER')
 
     verbose = False
-    default_host = '192.168.8.8'
+    default_host = '192.168.1.1'
     default_port = 8090
     try:
         # such as c:\\

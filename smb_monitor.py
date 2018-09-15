@@ -17,6 +17,7 @@
 #
 # Version    Author                          Date
 #  1.0.0     Ronny<xiezhulin@vivo.com>    Mar 8, 2016
+#  2.0.0     Ronny<xiezhulin@vivo.com>    Sep 15, 2018
 #
 
 import os
@@ -30,23 +31,26 @@ import threading
 
 
 class SmbMonitor():
-    s = None
-    default_port = 8090
-    backlog = 5
-    size = 1024
-    interval = 0.25
+    DEFAULT_PORT = 8090
+    BACKLOG = 5
+    SIZE = 1024
 
     usage = "%s [Optinos]" % sys.argv[0]
     description = """Copyright (c) Guangdong vivo software technology CO.,LTD.
-smb command server run on windows by Ronny<xiezhulin@vivo.com> Mar 8, 2016
+dosmb server run on windows by Ronny<xiezhulin@vivo.com>.
+v1.0.0 (Mar 8, 2016) first version.
+v2.0.0 (Sep 15, 2018) improve codestyle, add grant ip to prevent attacks within the LAN
+then remove interval after receiving a message.
+v3.0.0 TODO:check client ip.
 """
+    socket = None;
+    grant_ip = []
 
     def __init__(self):
         self.verbose = True
 
         hostname = socket.gethostname()
         self.host = socket.gethostbyname(hostname)
-        self.port = 8090
 
         self.parse_otpions()
         print('hostname: %s\nhost: %s\nport:%d' %(hostname, self.host, self.port))
@@ -56,24 +60,43 @@ smb command server run on windows by Ronny<xiezhulin@vivo.com> Mar 8, 2016
         p = optparse.OptionParser(usage=self.usage, description=self.description)
         p.add_option('-p', '--port',
                         dest='port',
-                        help='server port, defaults to %d' % self.default_port,
+                        help='server port, defaults to %d' % self.DEFAULT_PORT,
                         metavar='PORT',
-                        default=self.default_port)
+                        default=self.DEFAULT_PORT)
+        p.add_option('-g', '--grant-ip',
+                        dest='grant_ip',
+                        help='grant client ip(s) separated by commas, defaluts to grant all ips',
+                        metavar='GRANT_IP',
+                        default='')
 
         opt, _ = p.parse_args()
         if opt.port:
             self.port = int(opt.port)
+        else:
+            self.port = self.DEFAULT_PORT
+
+        if opt.grant_ip:
+            self.grant_ip = opt.grant_ip.split(',')
+            if self.verbose:
+                for s in self.grant_ip:
+                    print('grant ip: %s' % (s, ))
+        else:
+            print('grant all client ip!')
 
     def executor(self, cmd):
         os.system(cmd)
 
     def run(self):
-        self.s = socket.socket()
-        self.s.bind((self.host, self.port))
-        self.s.listen(self.backlog)
+        self.socket = socket.socket()
+        self.socket.bind((self.host, self.port))
+        self.socket.listen(self.BACKLOG)
         while True:
-            conn, addr = self.s.accept()
-            buf = conn.recv(self.size)
+            conn, addr = self.socket.accept()
+            client_ip = addr[0]
+            if self.grant_ip and client_ip not in self.grant_ip:
+                print("%s: no grant permission, ignore!" % (client_ip, ))
+                continue
+            buf = conn.recv(self.SIZE)
             if buf:
                 if self.verbose:
                     print("receive: [%s]" % (buf, ))
@@ -81,12 +104,10 @@ smb command server run on windows by Ronny<xiezhulin@vivo.com> Mar 8, 2016
                 thread.setDaemon(True)
                 thread.start()
 
-        time.sleep(self.interval)
-
     def __del__(self):
-        if self.s:
+        if self.socket:
             print('delete')
-            self.s.close()
+            self.socket.close()
 
 if __name__ == '__main__':
     SmbMonitor()

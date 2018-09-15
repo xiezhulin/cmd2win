@@ -35,4 +35,15 @@ Do operations based on samba quickly on windows by using custom commands on linu
      Config windows compare tools, and add the tools to windows' environment, defaults to fc, ensure "Bcompare" can
      run by windows cmd 
      $ export SMB_COMPARER="Bcompare"
+# FAQ
+1. Ensure 'Sharename' is your linux user name in samba config(/etc/samba/smb.conf) -- TOSUPPORT
+    # my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin, samba config as follows
+    [xiezhulin]
+    comment = shared Folder with username and password
+    path = /home/xiezhulin
+    public = yes
+    writable = yes
+    available = yes
+    browseable = yes
+    valid users = xiezhulin
 
