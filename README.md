@@ -15,8 +15,9 @@ Do operations based on samba quickly on windows by using custom commands on linu
 
 # Installation
 ## On Windows
-    Put 'smb_monitor.py' into 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs',
-    ensure the server can started when windows bootcompleted, but maybe different path in your computer.
+    Run 'smb_monitor.py' by cmd(details with '--help') after windos boot, or put 'smb_monitor.py' into
+    'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs', ensure the server
+    can started when windows bootcompleted, but maybe different path in your computer.
 ## On Linux
 ### 1. Put 'dosmb' into your PATH directory, ensure dosmb can run in any directory
 ### 2. Set envrironment, it's optional, such as append the following content to ~/.bashrc
@@ -26,24 +27,11 @@ Do operations based on samba quickly on windows by using custom commands on linu
      $ alias scu="dosmb --host 192.168.1.1 custom"
      $ alias sc="dosmb --host 192.168.1.1 cmp"
      $ alias scl="dosmb --host 192.168.1.1 clip"
- #### 2) Change defaults
-     Samba map dirve on windows network defaults to ip-address for your linux(unix) server
-     $ export SMB_MAP_DRIVE="y:\\"
+#### 2) Change defaults
      Text editor defaults to notepad, ensure "gvim" can run by windows cmd
      $ export SMB_TXT_EDITOR="gvim"
      $ export SMB_TXT_EDITOR_SUPPORT_MULTI_FILES=True
      Config windows compare tools, and add the tools to windows' environment, defaults to fc, ensure "Bcompare" can
      run by windows cmd
      $ export SMB_COMPARER="Bcompare"
-# FAQ
-## 1. Ensure 'Sharename' is your linux user name in samba config(TODO: support /etc/samba/smb.conf)
-     samba config rule as follows, my linux user name is xiezhulin, and my samba 'Sharename' is xiezhulin too
-     [xiezhulin]
-     comment = shared Folder with username and password
-     path = /home/xiezhulin
-     public = yes
-     writable = yes
-     available = yes
-     browseable = yes
-     valid users = xiezhulin
-     
+
