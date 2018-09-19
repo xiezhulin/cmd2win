@@ -15,7 +15,7 @@ Do operations based on samba quickly on windows by using custom commands on linu
 
 # Installation
 ## On Windows
-    Run 'smb_monitor.py' by cmd(details with '--help') after windos boot, or put 'smb_monitor.py' into
+    Run 'smb_monitor.py' by cmd(details with '--help') after windows boot, or put 'smb_monitor.py' into
     'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs', ensure the server
     can started when windows bootcompleted, but maybe different path in your computer.
 ## On Linux

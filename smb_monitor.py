@@ -29,7 +29,6 @@ import socket
 import optparse
 import threading
 
-
 class SmbMonitor():
     DEFAULT_PORT = 8090
     BACKLOG = 5
@@ -38,10 +37,11 @@ class SmbMonitor():
     usage = "%s [Optinos]" % sys.argv[0]
     description = """Copyright (c) Guangdong vivo software technology CO.,LTD.
 dosmb server run on windows by Ronny<xiezhulin@vivo.com>.
-v1.0.0 (Mar 8, 2016) first version.
-v2.0.0 (Sep 15, 2018) improve codestyle, add grant ip to prevent attacks within the LAN
+v1.0 (Mar 8, 2016) first version.
+v2.0 (Sep 15, 2018) improve codestyle, add grant ip to prevent attacks within the LAN
 then remove interval after receiving a message.
-v3.0.0 TODO:check client ip.
+v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
+v3.1 TODO:check client ip.
 """
     socket = None;
     grant_ip = []
@@ -54,6 +54,7 @@ v3.0.0 TODO:check client ip.
 
         self.parse_otpions()
         print('hostname: %s\nhost: %s\nport:%d' %(hostname, self.host, self.port))
+        self.net_maps = self.get_net_map_drivers()
         self.run()
 
     def parse_otpions(self):
@@ -83,6 +84,25 @@ v3.0.0 TODO:check client ip.
         else:
             print('grant all client ip!')
 
+    def get_net_map_drivers(self):
+        COLUMN_NAMES = ('status', 'local', 'remote', 'network')
+        records = []
+        try:
+            f = os.popen('net use')
+            content = f.read()
+            for line in content.splitlines():
+                line = line.strip()
+                if line.startswith('OK'):
+                    record = line.split()
+                    if len(record) < len(COLUMN_NAMES):
+                        raise Exception("invalid result for 'net use'")
+                    else:
+                        # only to get local and remote
+                        records.append((record[1], record[2]))
+        finally:
+            f.close()
+        return records
+
     def executor(self, cmd):
         os.system(cmd)
 
@@ -100,6 +120,15 @@ v3.0.0 TODO:check client ip.
             if buf:
                 if self.verbose:
                     print("receive: [%s]" % (buf, ))
+                found = 0
+                for local, remote in self.net_maps:
+                    if buf.find(remote) != -1:
+                        buf = buf.replace(remote, local)
+                        found = 1
+                        # continue to replace, no break
+                if self.verbose and found == 1:
+                    print("convert: [%s]" % (buf, ))
+
                 thread = threading.Thread(target=self.executor, args=(buf.encode('gbk'), ))
                 thread.setDaemon(True)
                 thread.start()
