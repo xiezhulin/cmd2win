@@ -13,11 +13,7 @@
 # source code was originally received.
 #
 # Description:
-#     monitor and do smb operation, it run on windows
-#
-# Version    Author                          Date
-#  1.0.0     Ronny<xiezhulin@vivo.com>    Mar 8, 2016
-#  2.0.0     Ronny<xiezhulin@vivo.com>    Sep 15, 2018
+#     cmd2win server it run on windows, execute cmd2win some commands supported
 #
 
 import os
@@ -29,19 +25,18 @@ import socket
 import optparse
 import threading
 
-class SmbMonitor():
+class Cmd2WinServer():
     DEFAULT_PORT = 8090
     BACKLOG = 5
     SIZE = 1024
 
     usage = "%s [Optinos]" % sys.argv[0]
     description = """Copyright (c) Guangdong vivo software technology CO.,LTD.
-dosmb server run on windows by Ronny<xiezhulin@vivo.com>.
+cmd2win server run on windows by Ronny<xiezhulin@vivo.com>.
 v1.0 (Mar 8, 2016) first version.
 v2.0 (Sep 15, 2018) improve codestyle, add grant ip to prevent attacks within the LAN
 then remove interval after receiving a message.
 v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
-v3.1 TODO:check client ip.
 """
     socket = None;
     grant_ip = []
@@ -139,5 +134,5 @@ v3.1 TODO:check client ip.
             self.socket.close()
 
 if __name__ == '__main__':
-    SmbMonitor()
+    Cmd2WinServer()
 
