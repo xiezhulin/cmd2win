@@ -38,7 +38,7 @@ import optparse
 import socket
 
 
-class Common():
+class Common(object):
 
     def run_and_get(self, command):
         result = []
@@ -55,7 +55,8 @@ class Common():
         return result
 
 
-class CommandConvertSender():
+class CommandConvertSender(object):
+
     USAGE = """cmd2win [Optinos] [Args]
 Args:
     cmp <src> <dst>
@@ -83,26 +84,26 @@ Args:
         copy the window's corresponding path of the given file/directory to window's clipboard, defaults to the current directory"""
 
     # config default windows host and port
-    DEFAULT_HOST = '192.168.1.1'
-    DEFAULT_PORT = 8090
+    _DEFAULT_HOST = '192.168.1.1'
+    _DEFAULT_PORT = 8090
 
     # parse unix environment variables
-    COMPARER = 'SMB_COMPARER'
-    TXT_EDITOR = 'SMB_TXT_EDITOR'
-    TXT_EDITOR_SUPPORT_MULTI_FILES = 'SMB_TXT_EDITOR_SUPPORT_MULTI_FILES'
-    ENV = os.environ
+    _COMPARER = 'SMB_COMPARER'
+    _TXT_EDITOR = 'SMB_TXT_EDITOR'
+    _TXT_EDITOR_SUPPORT_MULTI_FILES = 'SMB_TXT_EDITOR_SUPPORT_MULTI_FILES'
+    _ENV = os.environ
 
-    comparer = ENV[COMPARER] if COMPARER in ENV else 'fc'
-    editor = ENV[TXT_EDITOR] if TXT_EDITOR in ENV else 'notepad'
+    _COMPARER = _ENV[_COMPARER] if _COMPARER in _ENV else 'fc'
+    _EDITOR = _ENV[_TXT_EDITOR] if _TXT_EDITOR in _ENV else 'notepad'
 
-    if TXT_EDITOR_SUPPORT_MULTI_FILES in ENV:
-        if ENV[TXT_EDITOR_SUPPORT_MULTI_FILES] == 'True':
-            editor_support_multi_files = True
+    if _TXT_EDITOR_SUPPORT_MULTI_FILES in _ENV:
+        if _ENV[_TXT_EDITOR_SUPPORT_MULTI_FILES] == 'True':
+            _EDITOR_SUPPORT_MULTI_FILES = True
     else:
-        editor_support_multi_files = False
+        _EDITOR_SUPPORT_MULTI_FILES = False
 
     # default disable
-    verbose = False
+    _verbose = False
 
     def __init__(self, *args):
         cmd = self.__parse_args()
@@ -138,14 +139,14 @@ Args:
         p = optparse.OptionParser(usage=self.USAGE, add_help_option=True)
         p.add_option('--host',
                         dest='host',
-                        help='server host, defaults to %s' % self.DEFAULT_HOST,
+                        help='server host, defaults to %s' % self._DEFAULT_HOST,
                         metavar='HOST',
-                        default=self.DEFAULT_HOST)
+                        default=self._DEFAULT_HOST)
         p.add_option('-p', '--port',
                         dest='port',
-                        help='server port, defaults to %d' % self.DEFAULT_PORT,
+                        help='server port, defaults to %d' % self._DEFAULT_PORT,
                         metavar='PORT',
-                        default=self.DEFAULT_PORT)
+                        default=self._DEFAULT_PORT)
         p.add_option('-v', '--verbose',
                         dest='verbose',
                         action='store_true',
@@ -153,7 +154,7 @@ Args:
 
         opt, remainder = p.parse_args()
         if opt.verbose:
-            self.verbose = True
+            self._verbose = True
         if opt.host:
             self.host = opt.host
         else:
@@ -186,7 +187,7 @@ Args:
 
         if win_cmd and self.s:
             self.s.send(win_cmd)
-            if self.verbose:
+            if self._verbose:
                 print("Send: [%s]" % (win_cmd,))
 
     def __cmp(self, args):
@@ -196,12 +197,12 @@ Args:
 
         src = self.__check_and_convert(args[0])
         dst = self.__check_and_convert(args[1])
-        return "%s %s %s" % (self.comparer, src, dst)
+        return "%s %s %s" % (self._COMPARER, src, dst)
 
     def __open(self, args, parent=False):
         if len(args) == 0:
             args = [os.getcwd(), ]
-            if self.verbose:
+            if self._verbose:
                 print("Use current working directory as defaut")
 
         cmd = []
@@ -225,11 +226,11 @@ Args:
             cmd.append(u'start %s' % d)
 
         if filelist:
-            if self.editor_support_multi_files:
-                cmd.append(u'%s %s' % (self.editor, ' '.join(filelist)))
+            if self._EDITOR_SUPPORT_MULTI_FILES:
+                cmd.append(u'%s %s' % (self._EDITOR, ' '.join(filelist)))
             else:
                 for d in filelist:
-                    cmd.append(u'%s %s' % (self.editor, win_path))
+                    cmd.append(u'%s %s' % (self._EDITOR, win_path))
 
         return ' | '.join(cmd)
 
@@ -252,7 +253,7 @@ Args:
         for p in args:
             if p.startswith(':'):
                 p = p[1:]
-                if self.verbose:
+                if self._verbose:
                     print("Skip origin path:[%s]" % (p,))
                 cmd.append(p)
             else:
@@ -264,7 +265,7 @@ Args:
     def __clip(self, args):
         if len(args) == 0:
             args = [os.getcwd(), ]
-            if self.verbose:
+            if self._verbose:
                 print("Use current working directory as defaut")
         elif len(args) != 1:
             print("Only one parameter, please retry")
@@ -272,13 +273,13 @@ Args:
 
         p = args[0]
         win_path = self.__check_and_convert(p)
-        if self.verbose:
+        if self._verbose:
             print("clip -> %s" % (win_path,))
         # can't contain a space before '|'
         return "echo x|set/p =" + win_path + "| clip"
 
 
-class CygwinCommad(CommandConvertSender, Common):
+class CygwinCommand(CommandConvertSender, Common):
 
     def __init__(self, *args):
         self.cygpath_prefix = 'cygpath -aw '
@@ -292,7 +293,7 @@ class CygwinCommad(CommandConvertSender, Common):
         result = Common.run_and_get(self, self.cygpath_prefix + path)
         if len(result) != 1:
             raise Exception("Invalid result [%s] for '%s'" % ('\n'.join(result), self.cygpath_prefix))
-        if CommandConvertSender.verbose:
+        if CommandConvertSender._verbose:
             print("cygpath: %s -> %s" % (path, result[0]))
         return result[0]
 
@@ -387,6 +388,7 @@ if __name__ == '__main__':
     if uname.find('Linux') != -1:
         SmbCommand(sys.argv[1:])
     elif uname.find('CYGWIN_NT') != -1:
-        CygwinCommad(sys.argv[1:])
+        CygwinCommand(sys.argv[1:])
     else:
         print("Unspport %s platform, send e-mail to xiezhulin@vivo.com if want to support" % (uname,))
+

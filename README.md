@@ -24,11 +24,12 @@ Run some commands the tools supported on Linux/Cygwin, and it can be reponse on 
 ### 1. Put 'cmd2win' into your PATH directory, ensure cmd2win can run in any directory
 ### 2. Set envrironment, it's optional, such as append the following content to ~/.bashrc
 #### 1) Set alias(Let's say your Windows IP is 192.168.1.1)
-     $ alias so="cmd2win --host 192.168.1.1 open"
-     $ alias sod="cmd2win --host 192.168.1.1 open_parent_dir"
-     $ alias scu="cmd2win --host 192.168.1.1 custom"
-     $ alias sc="cmd2win --host 192.168.1.1 cmp"
-     $ alias scl="cmd2win --host 192.168.1.1 clip"
+     $ cmd2win_cmd_prefix="cmd2win --host 172.25.124.179"
+     $ alias so="$cmd2win_cmd_prefix open"
+     $ alias sod="$cmd2win_cmd_prefix open_parent_dir"
+     $ alias scu="$cmd2win_cmd_prefix custom"
+     $ alias sc="$cmd2win_cmd_prefix cmp"
+     $ alias scl="$cmd2win_cmd_prefix clip"
 #### 2) Change defaults
      Text editor defaults to notepad, ensure "gvim" can run by windows cmd
      $ export SMB_TXT_EDITOR="gvim"
