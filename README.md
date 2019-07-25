@@ -1,13 +1,5 @@
 # Copyright
-Copyright(c) Guangdong vivo software technology CO.,LTD. Unpublished
-
-Guangdong vivo software technology CO.,LTD.Proprietary & Confidential
-
-This source code and the algorithms implemented therein constitute
-confidential information and may comprise trade secrets of vivo
-or its associates, and any use thereof is subject to the terms and
-conditions of the Non-Disclosure Agreement pursuant to which this
-source code was originally received.
+Copyright(c) xiezhulin<zdld99170@126.com>
 
 # Description
 Run some commands the tools supported on Linux/Cygwin, and it can be reponse on Windows

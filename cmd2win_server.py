@@ -1,22 +1,13 @@
 #!/usr/bin/env python2
 # coding: UTF-8
 #
-# Copyright (c) Guangdong vivo software technology CO.,LTD. Unpublished
-#
-# Guangdong vivo software technology CO.,LTD.
-# Proprietary & Confidential
-#
-# This source code and the algorithms implemented therein constitute
-# confidential information and may comprise trade secrets of vivo
-# or its associates, and any use thereof is subject to the terms and
-# conditions of the Non-Disclosure Agreement pursuant to which this
-# source code was originally received.
+# Copyright (c) xiezhulin<zdld99170@126.com>
 #
 # Description:
 #     cmd2win server it run on windows, execute cmd2win some commands supported
 #
 # Author:
-#       Ronny<xiezhulin@vivo.com>
+#       Ronny<zdld99170@126.com>
 #
 # Version infomation:
 #     Version  Date            Description
@@ -40,8 +31,8 @@ class Cmd2WinServer(object):
     _SIZE = 1024
 
     _USAGE = "%s [Optinos]" % sys.argv[0]
-    description = """Copyright (c) Guangdong vivo software technology CO.,LTD.
-cmd2win server run on windows by Ronny<xiezhulin@vivo.com>.
+    description = """Copyright (c) xiezhulin<zdld99170@126.com>
+cmd2win server run on windows by Ronny
 v1.0 (Mar 8, 2016) first version.
 v2.0 (Sep 15, 2018) improve codestyle, add grant ip to prevent attacks within the LAN
 then remove interval after receiving a message.
