@@ -1,8 +1,8 @@
 # Copyright
-Copyright(c) xiezhulin<zdld99170@126.com>
+Copyright(c) xiezhulin\<zdld99170@126.com>
 
 # Description
-Run some commands the tools supported on Linux/Cygwin, and it can be reponse on Windows
+Run the defined commands on Linux/Cygwin, and execute on Windows
 [Usage](https://github.com/xiezhulin/cmd2win/blob/master/cmd2win)
 
 # Installation
