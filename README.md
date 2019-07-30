@@ -15,8 +15,8 @@ Run the defined commands on Linux/Cygwin, and execute on Windows
 ## On Linux
 ### 1. Put 'cmd2win' into your PATH directory, ensure cmd2win can run in any directory
 ### 2. Set envrironment, it's optional, such as append the following content to ~/.bashrc
-#### 1) Set alias(Let's say your Windows IP is 192.168.1.1)
-     $ cmd2win_cmd_prefix="cmd2win --host 172.25.124.179"
+#### 1) Set alias(Let's say your windows's IP is 192.168.1.1)
+     $ cmd2win_cmd_prefix="cmd2win --host 192.168.1.1"
      $ alias so="$cmd2win_cmd_prefix open"
      $ alias sod="$cmd2win_cmd_prefix open_parent_dir"
      $ alias scu="$cmd2win_cmd_prefix custom"
