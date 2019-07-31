@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # coding: UTF-8
 #
 # Copyright (c) xiezhulin<zdld99170@126.com>
@@ -17,12 +17,16 @@
 
 import os
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 import time
 import socket
 import optparse
 import threading
+if sys.version_info.major < 3:
+    print("python 2")
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+else:
+    print("python 3+")
 
 
 class Cmd2WinServer(object):
@@ -45,7 +49,8 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
     def __init__(self):
 
         hostname = socket.gethostname()
-        self.host = socket.gethostbyname(hostname)
+        #self.host = socket.gethostbyname(hostname)
+        self.host = self.__get_host_ip()
 
         self.parse_otpions()
         print('hostname: %s\nhost: %s\nport:%d' %(hostname, self.host, self.port))
@@ -80,7 +85,7 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
             print('grant all client ip!')
 
     def get_net_map_drivers(self):
-        COLUMN_NAMES = ('status', 'local', 'remote', 'network')
+        COLUMN_NAMES = ('status', 'local', 'remote')
         records = []
         try:
             f = os.popen('net use')
@@ -98,6 +103,15 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
             f.close()
         return records
 
+    def __get_host_ip(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        finally:
+            s.close()
+        return ip
+
     def executor(self, cmd):
         os.system(cmd)
 
@@ -105,6 +119,7 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
         self._socket = socket.socket()
         self._socket.bind((self.host, self.port))
         self._socket.listen(self._BACKLOG)
+
         while True:
             conn, addr = self._socket.accept()
             client_ip = addr[0]
@@ -113,8 +128,12 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
                 continue
             buf = conn.recv(self._SIZE)
             if buf:
+                if sys.version_info.major >= 3:
+                    buf = buf.decode()
+
                 if self._verbose:
                     print("receive: [%s]" % (buf, ))
+
                 found = 0
                 for local, remote in self.net_maps:
                     if buf.find(remote) != -1:
@@ -124,7 +143,10 @@ v3.0 (Sep 19, 2018) convert net remote to local driver if mapped
                 if self._verbose and found == 1:
                     print("convert: [%s]" % (buf, ))
 
-                thread = threading.Thread(target=self.executor, args=(buf.encode('gbk'), ))
+                if sys.version_info.major < 3:
+                    thread = threading.Thread(target=self.executor, args=(buf.encode('gbk'), ))
+                else:
+                    thread = threading.Thread(target=self.executor, args=(buf, ))
                 thread.setDaemon(True)
                 thread.start()
 
