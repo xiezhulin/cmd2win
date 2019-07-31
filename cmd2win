@@ -214,7 +214,7 @@ Args:
                 return ''
 
         for d in dirlist:
-            cmd.append(u'start %s' % d)
+            cmd.append(u'start "" %s' % d)
 
         if filelist:
             if self._EDITOR_SUPPORT_MULTI_FILES:
@@ -281,12 +281,12 @@ class CygwinCommand(CommandConvertSender, Common):
 
     """ override method """
     def convert(self, path):
-        result = Common.run_and_get(self, self.cygpath_prefix + path)
+        result = Common.run_and_get(self, self.cygpath_prefix + '"' + path + '"')
         if len(result) != 1:
             raise Exception("Invalid result [%s] for '%s'" % ('\n'.join(result), self.cygpath_prefix))
         if CommandConvertSender._verbose:
             print("cygpath: %s -> %s" % (path, result[0]))
-        return result[0]
+        return '"' + result[0] + '"'
 
 
 class SmbCommand(CommandConvertSender):
@@ -317,7 +317,7 @@ class SmbCommand(CommandConvertSender):
             print("No found corresponding smb config")
             sys.exit(2)
 
-        return r'\\' + self.ipaddr + '\\' + smb_path
+        return '"' + r'\\' + self.ipaddr + '\\' + smb_path + '"'
 
     def __get_user_smb_conf(self):
         # get valid line
